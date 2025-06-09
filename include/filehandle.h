@@ -1,6 +1,8 @@
 #ifndef FILEHANDLE_H
 #define FILEHANDLE_H
 #include <string>
+#include "pair.hpp"
+#include "sqlist.hpp"
 
 /**
  * @class FileHandle
@@ -13,6 +15,7 @@
 class FileHandle{
 private:
     const std::string _filename;  // 要处理的文件名
+    //最终得到的词频表
 
 public:
     SqList<std::string> _word_set;  // 存储处理后的单词集合
@@ -27,6 +30,8 @@ public:
      */
     bool get_word_set();
 
+    bool wirte_in_file(SqList<Pair<std::string, int>> frequency_table, 
+                        const std::string outfile);
 private:
     /**
      * @brief 处理单个单词（转小写并移除非字母字符）
