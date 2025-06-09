@@ -1,7 +1,6 @@
 #include "filehandle.h"
 #include <iostream>
 #include <fstream>
-#include "sqlist.hpp"
 
 /**
  * @brief 从文件中读取文本，提取单词并存储到 _word_set 中
@@ -11,7 +10,7 @@
  * 
  * @return 如果文件成功打开并处理返回true，否则返回false
  */
-bool FileHandle::get_word_set(){
+bool FileHandle::read_from_file(){
     std::ifstream file(_filename);
     if (!file.is_open()){
         std::cerr << "无法打开文件: " << _filename << std::endl;
@@ -28,6 +27,17 @@ bool FileHandle::get_word_set(){
     return true;
 }
 
+/**
+ * @brief 获取处理后的单词集合
+ * 
+ * 提供对内部存储的单词集合的只读访问，允许外部代码遍历或查询单词，
+ * 但不允许修改集合内容。
+ * 
+ * @return 返回单词集合的常量引用
+ */
+const SqList<std::string>& FileHandle::get_word_set() const {
+        return _word_set;
+}
 /**
  * @brief 处理单个单词，转换为小写并移除非字母字符
  * 
@@ -57,7 +67,13 @@ void FileHandle::process_word(std::string &word)
         word = word.substr(start, end - start);
     }
 }
-bool FileHandle::write_in_file(const FreqTable& frequency_table, 
+/**
+ * @brief 将词频统计结果写入指定的输出文件
+ * @param frequency_table 包含单词及其出现频率的表格
+ * @param outfile 输出文件的路径
+ * @return 如果写入成功返回true，否则返回false
+ */
+bool FileHandle::write_into_file(const FreqTable& frequency_table, 
                         const std::string& outfile)
 {
     std::ofstream out(outfile);
