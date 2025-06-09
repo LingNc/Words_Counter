@@ -1,8 +1,7 @@
 #ifndef FILEHANDLE_H
 #define FILEHANDLE_H
-#include <string>
-#include "pair.hpp"
-#include "sqlist.hpp"
+
+#include "basetype.h"
 
 /**
  * @class FileHandle
@@ -30,8 +29,8 @@ public:
      */
     bool get_word_set();
 
-    bool wirte_in_file(SqList<Pair<std::string, int>> frequency_table, 
-                        const std::string outfile);
+    bool write_in_file(const FreqTable& frequency_table, 
+                        const std::string& outfile);
 private:
     /**
      * @brief 处理单个单词（转小写并移除非字母字符）

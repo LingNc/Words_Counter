@@ -57,8 +57,8 @@ void FileHandle::process_word(std::string &word)
         word = word.substr(start, end - start);
     }
 }
-bool FileHandle::wirte_in_file(SqList<Pair<std::string, int>> frequency_table, 
-                        const std::string outfile)
+bool FileHandle::write_in_file(const FreqTable& frequency_table, 
+                        const std::string& outfile)
 {
     std::ofstream out(outfile);
     if (!out.is_open()) {
@@ -66,7 +66,7 @@ bool FileHandle::wirte_in_file(SqList<Pair<std::string, int>> frequency_table,
         return false;
     }
     out << "单词" << "   |    " << "频率" << std::endl;
-    for (int i = 0; i < frequency_table.size(); i++) {
+    for (size_t i = 0; i < frequency_table.size(); i++) {
         out << frequency_table[i].first << "    " << frequency_table[i].second << std::endl;
     }
     out.close();
