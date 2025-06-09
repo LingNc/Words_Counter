@@ -1,0 +1,104 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.vue": "vue",
+			".clangd": "yaml",
+			"*.cfg": "ini",
+			"*.c": "c",
+			"*.h": "c",
+			"*.code-workspace": "json",
+			"vector": "cpp",
+			"array": "cpp",
+			"deque": "cpp",
+			"string": "cpp",
+			"unordered_map": "cpp",
+			"string_view": "cpp",
+			"initializer_list": "cpp"
+		}
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "make main",
+				"type": "shell",
+				"command": "make",
+				"args": ["main"],
+				"group": "build",
+				"options": {
+					"cwd": "${workspaceFolder}"
+				},
+				"problemMatcher": ["$gcc"]
+			},
+			{
+				"label": "make test",
+				"type": "shell",
+				"command": "make",
+				"args": ["test"],
+				"group": "build",
+				"options": {
+					"cwd": "${workspaceFolder}"
+				},
+				"problemMatcher": ["$gcc"]
+			}
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "调试 Main",
+				"type": "cppdbg",
+				"request": "launch",
+				"program": "${workspaceFolder}/WordsCounter",
+				"args": [],
+				"stopAtEntry": false,
+				"cwd": "${workspaceFolder}",
+				"environment": [],
+				"externalConsole": false,
+				"MIMode": "gdb",
+				"setupCommands": [
+					{
+						"description": "Enable pretty-printing for gdb",
+						"text": "-enable-pretty-printing",
+						"ignoreFailures": true
+					}
+				],
+				"preLaunchTask": "make main",
+				"miDebuggerPath": "/usr/bin/gdb",
+				"logging": {
+					"engineLogging": false
+				}
+			},
+			{
+				"name": "调试 Tests",
+				"type": "cppdbg",
+				"request": "launch",
+				"program": "${workspaceFolder}/wordtest",
+				"args": [],
+				"stopAtEntry": false,
+				"cwd": "${workspaceFolder}",
+				"environment": [],
+				"externalConsole": false,
+				"MIMode": "gdb",
+				"setupCommands": [
+					{
+						"description": "Enable pretty-printing for gdb",
+						"text": "-enable-pretty-printing",
+						"ignoreFailures": true
+					}
+				],
+				"preLaunchTask": "make test",
+				"miDebuggerPath": "/usr/bin/gdb",
+				"logging": {
+					"engineLogging": false
+				}
+			}
+		]
+	}
+}
