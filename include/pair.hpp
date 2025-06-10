@@ -67,4 +67,13 @@ bool Pair<Type1, Type2>::operator>=(const Pair &other) const {
     return !(*this < other);
 }
 
+
+// 默认拷贝赋值运算符
+template <typename Type1, typename Type2>
+Pair<Type1, Type2>& Pair<Type1, Type2>::operator=(const Pair &other) = default;
+
+// 移动赋值运算符
+template <typename Type1, typename Type2>
+Pair<Type1, Type2>& Pair<Type1, Type2>::operator=(Pair &&other) noexcept = default;
+
 #endif // PAIR_H
