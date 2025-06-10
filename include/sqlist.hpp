@@ -11,7 +11,7 @@ class SqList{
 public:
     // 基本函数
     SqList()=default;
-    SqList(size_t n) {
+    explicit SqList(size_t n) {
         _data.resize(n);
     }
     ~SqList()=default;
