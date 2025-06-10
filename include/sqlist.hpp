@@ -11,7 +11,20 @@ class SqList{
 public:
     // 基本函数
     SqList()=default;
+    SqList(size_t n) {
+        _data.resize(n);
+    }
     ~SqList()=default;
+    
+    // 调整大小
+    void resize(size_t n) {
+        _data.resize(n);
+    }
+    
+    // 预留空间
+    void reserve(size_t n) {
+        _data.reserve(n);
+    }
 
     // 元素操作
     void push_back(const Type &value);
