@@ -1,5 +1,10 @@
 #include "sequensqlist.h"
 
+// 初始化
+SequenSqList::SequenSqList(const SqList<string> &baseTable){
+    load(baseTable);
+}
+
 // 找到的地方，如果没有找到返回size()，和查找次数
 Pair<size_t,size_t> SequenSqList::find_word(const string &word){
     size_t index=_data.size();

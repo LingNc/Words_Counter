@@ -1,5 +1,10 @@
 #include "binarysqlist.h"
 
+// 初始化
+BinarySqlist::BinarySqlist(const SqList<string> &baseTable){
+    load(baseTable);
+}
+
 // 返回第一个大于等于的地方
 Pair<size_t,size_t> BinarySqlist::find_word(const string &word){
     int64_t left = -1, right = _data.size();
@@ -7,18 +12,21 @@ Pair<size_t,size_t> BinarySqlist::find_word(const string &word){
     size_t comparisons=0;
 
     while(left+1<right){
-        int64_t mid=left+(right-left)>>1;
+        int64_t mid=left+((right-left)>>1);
         comparisons++;
         if(_data[mid].first>=word)
             right=mid;
         else
             left=mid;
     }
-    // 如果没找到
-    if(left+1==_data.size()||_data[left+1].first!=word){
-        left=_data.size();
+    // 如果找到
+    if(right!=(int64_t)_data.size()){
+        if(_data[right].first==word){
+            return { right,comparisons };
+        }
+        else return { right,comparisons };
     }
-    return { left,comparisons };
+    else return { right, comparisons };
 }
 
 void BinarySqlist::insert_word(const std::string &word){

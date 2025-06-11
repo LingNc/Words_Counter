@@ -1,9 +1,9 @@
 #include "basesqlist.h"
 
-class SequenSqList: protected BaseSqList{
+class SequenSqList: public BaseSqList{
 public:
     SequenSqList()=default;
-    SequenSqList(const SqList<string> &baseTable):BaseSqList(baseTable){};
+    SequenSqList(const SqList<string> &baseTable);
     virtual void insert_word(const std::string &word) override;
 private:
     virtual Pair<size_t, size_t> find_word(const string &word) override;
