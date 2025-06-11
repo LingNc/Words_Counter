@@ -2,10 +2,8 @@
 #define PAIR_H
 
 #include <bits/move.h>
-
 template <typename Type1,typename Type2>
 class Pair{
-
 public:
     Type1 first;
     Type2 second;
@@ -21,9 +19,9 @@ public:
 
     // 赋值函数
     // 拷贝赋值
-    Pair &operator=(const Pair &other);
+    Pair &operator=(const Pair &other) = default;
     // 移动赋值
-    Pair &operator=(Pair &&other) noexcept;
+    Pair &operator=(Pair &&other) noexcept = default;
 
     // 比较
     bool operator==(const Pair &other) const;
@@ -66,14 +64,5 @@ template <typename Type1, typename Type2>
 bool Pair<Type1, Type2>::operator>=(const Pair &other) const {
     return !(*this < other);
 }
-
-
-// 默认拷贝赋值运算符
-template <typename Type1, typename Type2>
-Pair<Type1, Type2>& Pair<Type1, Type2>::operator=(const Pair &other) = default;
-
-// 移动赋值运算符
-template <typename Type1, typename Type2>
-Pair<Type1, Type2>& Pair<Type1, Type2>::operator=(Pair &&other) noexcept = default;
 
 #endif // PAIR_H
