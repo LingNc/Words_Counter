@@ -45,7 +45,6 @@ void OpenHash::resize(size_t newsize){
         }
     }
     
-    // 用新表替换旧表
     _hash = newhash;
 }
 // 载入基础单词表
@@ -93,7 +92,7 @@ OpenHash::Ret OpenHash::_search_word(const std::string &word) {
     uint32_t hashvalue = fnv1a_hash(word) % _hash.size();
     size_t i = hashvalue;
 
-    Ret result = {false, 0, 0};
+    Ret result = {false, 0, 0, 1};
     while (!_hash[i].first.empty()){
         result.comparisons++;
 
