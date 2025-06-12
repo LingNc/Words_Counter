@@ -28,3 +28,8 @@ BaseWordCounter::Ret BaseWordCounter::search_word(const std::string &word){
     }
     return result;
 }
+
+// 获取基类名字
+std::string BaseWordCounter::name() const {
+    return "基类Counter";
+}

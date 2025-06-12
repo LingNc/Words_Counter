@@ -64,3 +64,28 @@
 ### 5. 数据输出
 - **FileHandle**
   接收`FreqTable` → 写入`output.txt`
+
+## 项目开发
+
+### 1. 开发环境
+- **`WorkSpace`**
+  使用 Visual Studio Code 的`Workspace`功能，工作区在项目目录中 `Words_Counter.code-workspace` 文件中。
+  可以打开该文件，然后点击右下角的`打开工作区`按钮来打开工作区。
+- **编译配置**
+  使用 `Makefile` 文件来编译项目，支持以下命令：
+  - `make main`：编译项目
+  - `make test`：编译测试代码
+  - `make clean`：清理编译生成的文件
+  - `make help` ：显示帮助信息
+- **调试配置**
+  使用 Visual Studio Code 的调试功能，点击左侧的调试图标，然后选择
+    - `调试 Main` 或者 `调试 Test` 进行编译和调试。
+
+### 2. 代码测试
+- **测试代码**
+  - 测试文件位于 `tests\test.cpp` ，使用 `Makefile` 编译。
+  - 测试代码已经被排除，但是纳入编译和调试配置，方便开发使用，适合本地进行代码测试使用
+- **测试文件**
+  - 使用 `python3 download_tests.py` 来下载测试文件
+  - 文件分别是 《哈利波特》 和 《追忆似水年华》
+  - 文件名 `HarryPotter.txt` 和 `ÀLaRechercheDuTempsPerdu.txt`

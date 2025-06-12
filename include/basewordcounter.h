@@ -26,6 +26,9 @@ public:
     // 获取频率表
     virtual const FreqTable& get_frequency_table() const = 0;
 
+    // 获取特定类的称号
+    virtual std::string name() const;
+
     // 查找一个单词的频率，返回花费时间和词频
     Ret search_word(const std::string& word);
 
@@ -33,7 +36,7 @@ public:
     double get_ASL() const;
 protected:
     // 查找单词词频，返回是否(成功,词频)
-    virtual Ret _search_word(const std::string &word)=0;
+    virtual Ret _search_word(const std::string &word) = 0;
 private:
     size_t _totalCompares=0;
     size_t _successCounts=0;

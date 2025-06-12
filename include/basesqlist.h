@@ -10,7 +10,8 @@ protected:
     FreqTable _data;
 public:
     BaseSqList()=default;
-    BaseSqList(const SqList<string> &baseTable);
+    // 删除构造函数实现
+    // BaseSqList(const SqList<string> &baseTable);
     virtual void load(const SqList<string> &baseTable) override;
     virtual const FreqTable &get_frequency_table() const override;
 protected:
