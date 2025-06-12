@@ -1,4 +1,4 @@
-#include "openhash.hpp"
+#include "openhash.h"
 #include "basetype.h"
 #include "sqlist.hpp"
 #include "pair.hpp"

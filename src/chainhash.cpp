@@ -1,4 +1,4 @@
-#include "chainhash.hpp"
+#include "chainhash.h"
 #include "basetype.h"
 #include "sqlist.hpp"
 #include "pair.hpp"
