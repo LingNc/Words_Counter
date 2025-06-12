@@ -83,8 +83,8 @@ void SqList<Type>::_expand(){
     size_t new_capacity = _capacity * 2;
     Type* new_data = new Type[new_capacity];
 
-    // 使用工具函数utils::copy移动已有元素
-    utils::copy(_data, _data + _size, new_data);
+    // 使用工具函数utils::move移动已有元素
+    utils::move(_data, _data + _size, new_data);
 
     delete[] _data;
     _data = new_data;
@@ -199,8 +199,8 @@ void SqList<Type>::reserve(size_t n){
     if(n > _capacity){
         Type* new_data = new Type[n];
 
-        // 使用工具函数utils::copy移动已有元素
-        utils::copy(_data, _data + _size, new_data);
+        // 使用工具函数utils::move移动已有元素
+        utils::move(_data, _data + _size, new_data);
 
         delete[] _data;
         _data = new_data;
@@ -223,7 +223,7 @@ void SqList<Type>::push_back(Type &&value){
     if(_size >= _capacity){
         _expand();
     }
-    _data[_size] = std::move(value);
+    _data[_size] = utils::move(value);
     ++_size;
 }
 
@@ -248,7 +248,7 @@ void SqList<Type>::insert(size_t index, const Type &value){
     if(index < _size) {
         // 从后往前复制，避免覆盖
         for(size_t i = _size; i > index; --i) {
-            _data[i] = std::move(_data[i-1]);
+            _data[i] = utils::move(_data[i-1]);
         }
     }
 
