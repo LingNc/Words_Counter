@@ -5,6 +5,11 @@ BinarySqlist::BinarySqlist(const SqList<string> &baseTable){
     load(baseTable);
 }
 
+// 名字
+string BinarySqlist::name() const{
+    return "二分查找顺序表";
+}
+
 // 返回第一个大于等于的地方
 Pair<size_t,size_t> BinarySqlist::find_word(const string &word){
     int64_t left = -1, right = _data.size();
