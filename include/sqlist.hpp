@@ -4,9 +4,7 @@
 #include <cstddef>
 #include <initializer_list>
 #include <stdexcept>
-#include <bits/move.h>
 #include <cstring>
-#include <new>
 #include "utils.hpp"
 
 #define DEFAULT_CAPACITY 10
