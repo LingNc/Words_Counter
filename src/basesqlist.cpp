@@ -1,10 +1,6 @@
 #include "basesqlist.h"
 #include <algorithm>
 
-BaseSqList::BaseSqList(const SqList<string> &baseTable){
-    load(baseTable);
-}
-
 void BaseSqList::load(const SqList<string> &baseTable){
     _data.clear();
     for(const auto &word : baseTable){
