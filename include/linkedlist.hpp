@@ -28,6 +28,8 @@ public:
     void push_back(const Type& value);
     // 查找单词，返回首次出现的下标，否则返回(size_t)(-1)
     size_t find_word(const Type& word) const;
+    // 新增：获取头指针，便于外部遍历
+    ListNode<Type>* get_head() const { return head; }
 };
 
 // 析构函数，释放链表内存
