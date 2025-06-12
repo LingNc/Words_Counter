@@ -26,7 +26,8 @@ public:
     ~LinkedList();
 
     void push_back(const Type& value);
-    int find_word(const Type& word) const;
+    // 查找单词，返回首次出现的下标，否则返回(size_t)(-1)
+    size_t find_word(const Type& word) const;
 };
 
 // 析构函数，释放链表内存
@@ -53,17 +54,17 @@ void LinkedList<Type>::push_back(const Type& value) {
     cur->next = node;
 }
 
-// 查找单词，返回首次出现的下标，否则返回-1
+// 查找单词，返回首次出现的下标，否则返回(size_t)(-1)
 template <typename Type>
-int LinkedList<Type>::find_word(const Type& word) const {
+size_t LinkedList<Type>::find_word(const Type& word) const {
     ListNode<Type>* cur = head;
-    int idx = 0;
+    size_t idx = 0;
     while (cur) {
         if (cur->data == word) return idx;
         cur = cur->next;
         ++idx;
     }
-    return -1;
+    return (size_t)(-1);
 }
 
 
