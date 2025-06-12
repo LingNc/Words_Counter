@@ -6,17 +6,22 @@
 OpenHash::OpenHash(size_t size):_hash(size){};
 OpenHash::~OpenHash(){};
 
-uint32_t OpenHash::fnv1a_hash(const std::string& str) {
+// 名字
+std::string OpenHash::name() const {
+    return "开放地址哈希表";
+}
+
+uint32_t OpenHash::fnv1a_hash(const std::string &str){
     const uint32_t FNV_prime = 16777619u;
     const uint32_t offset_basis = 2166136261u;
-    
+
     uint32_t hash = offset_basis;
-    
+
     for (char c : str) {
         hash ^= static_cast<uint32_t>(c);
         hash *= FNV_prime;
     }
-    
+
     return hash;
 }
 
@@ -25,26 +30,26 @@ void OpenHash::resize(size_t newsize){
         newsize = _hash.size() * 2;
     }
     Hash newhash(newsize);
-    
+
     for (size_t i = 0; i < newsize; i++) {
         newhash[i] = Pair<std::string, size_t>("", 0);
     }
-    
+
     for (size_t i = 0; i < _hash.size(); i++){
         if (!_hash[i].first.empty()){
             // 重新计算哈希值
             uint32_t hashvalue = fnv1a_hash(_hash[i].first) % newsize;
             size_t j = hashvalue;
-            
+
             while (!newhash[j].first.empty()) {
                 j = (j + 1) % newsize;
             }
-            
+
             newhash[j].first = _hash[i].first;
             newhash[j].second = _hash[i].second;
         }
     }
-    
+
     _hash = newhash;
 }
 // 载入基础单词表
@@ -58,7 +63,7 @@ void OpenHash::load(const SqList<std::string> &baseTable) {
 void OpenHash::insert_word(const std::string& word) {
     uint32_t hashvalue = fnv1a_hash(word) % _hash.size();
     size_t i = hashvalue;
-    
+
     //线性探索
     while(!_hash[i].first.empty() && _hash[i].first != word){
         i =(i + 1) % _hash.size();
@@ -101,7 +106,7 @@ OpenHash::Ret OpenHash::_search_word(const std::string &word) {
             result.wordFreq = _hash[i].second;
             break;
         }
-        
+
         //当不配时, i++;
         i = (i + 1) % _hash.size();
         if (i == hashvalue)

@@ -7,7 +7,7 @@
 
 class ChainHash : public BaseWordCounter{
 using HashTable = SqList<SqLink<std::string>>;
-private: 
+private:
     HashTable _hash;
     size_t _elementCount;
     uint32_t fnv1a_hash(const std::string& str);
@@ -23,8 +23,10 @@ public:
     virtual void insert_word(const std::string& word) override;
 
     // 获取频率表
-    virtual const FreqTable& get_frequency_table() const override;
+    virtual const FreqTable &get_frequency_table() const override;
 
+    // 名字
+    virtual std::string name() const override;
 protected:
     // 查找单词词频，返回是否(成功,词频)和比较次数
     virtual Ret _search_word(const std::string &word) override;
