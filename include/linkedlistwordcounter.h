@@ -10,9 +10,8 @@
 
 #include "basewordcounter.h"
 #include "linkedlist.hpp"
-#include <chrono>
 #include <string>
-#include <utility>
+
 
 /**
  * @brief 用链表实现的词频统计器
@@ -70,11 +69,11 @@ protected:
         ret.isFound = false;
         ret.wordFreq = 0;
         ret.comparisons = 0;
-        for (const auto& item : freq_table) {
+        for (auto node = freq_table.get_head(); node; node = node->next) {
             ++ret.comparisons;
-            if (item.first == word) {
+            if (node->data.first == word) {
                 ret.isFound = true;
-                ret.wordFreq = item.second;
+                ret.wordFreq = node->data.second;
                 break; // 找到后立即退出循环
             }
         }
