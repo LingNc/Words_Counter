@@ -83,6 +83,29 @@ namespace utils{
     constexpr T &&forward(utils::remove_reference_t<T> &t) noexcept{
         return static_cast<T &&>(t);
     }
+
+    // 冒泡排序
+    template <typename Iter>
+    void sort(Iter first,Iter last){
+        if(first==last) return; // 空范围
+        for(auto it=first; it!=last; ++it){
+            for(auto jt=it+1; jt!=last; ++jt){
+                if(*jt<*it){
+                    auto temp=utils::move(*it);
+                    *it=utils::move(*jt);
+                    *jt=temp;
+                }
+            }
+        }
+    }
+
+    // 交换
+    template <typename T>
+    void swap(T &a,T &b){
+        T temp=utils::move(a);
+        a=utils::move(b);
+        b=temp;
+    }
 }
 
 #endif // TOOLS_H
