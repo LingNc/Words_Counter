@@ -23,8 +23,6 @@ public:
 
     bool add(const type& value);
 
-    void clear();
-
     //return the pointer if the sqlink contains the given value
     Pair<utils::shared_ptr<Node<type>>, size_t> find(const type& value) const;
 
@@ -72,9 +70,6 @@ bool SqLink<type>::add(const type& value){
     push_back(value);
     return true; //添加新节点
 }
-template <typename type>
-void SqLink<type>::clear(){
-    _head.reset(); // 智能指针会自动清理整个链表
-}
+
 
 #endif
