@@ -19,11 +19,24 @@
  */
 class LinkedListWordCounter : public BaseWordCounter {
 public:
+    /**
+     * @brief 构造函数，初始化链表词频统计器
+     */
     LinkedListWordCounter() = default;
+    /**
+     * @brief 析构函数
+     */
     ~LinkedListWordCounter() override = default;
+    /**
+     * @brief 获取统计器名称
+     * @return 名称字符串
+     */
+    std::string name() const override {
+        return "链表直接查找";
+    }
 
     /**
-     * @brief 加载基础单词表，清空当前统计表
+     * @brief 加载基础单词表，清空当前统计表并批量插入单词
      * @param baseTable 外部传入的单词顺序表
      */
     void load(const SqList<std::string> &baseTable) override {
@@ -83,7 +96,9 @@ protected:
     }
 
 private:
-    // 链表，存储<单词, 词频>对
+    /**
+     * @brief 链表，存储<单词, 词频>对
+     */
     LinkedList<std::pair<std::string, size_t>> freq_table;
 };
 
