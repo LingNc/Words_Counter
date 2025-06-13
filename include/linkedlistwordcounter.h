@@ -27,8 +27,10 @@ public:
      * @param baseTable 外部传入的单词顺序表
      */
     void load(const SqList<std::string> &baseTable) override {
-        (void)baseTable; // 消除未使用参数警告
         freq_table.clear(); // 清空链表
+        for (int i = 0; i < baseTable.size(); i++){
+            insert_word(baseTable[i]);
+        }
     }
 
     /**
