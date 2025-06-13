@@ -24,7 +24,7 @@ public:
     virtual void insert_word(const std::string& word) = 0;
 
     // 获取频率表
-    virtual const FreqTable& get_frequency_table() const = 0;
+    virtual const FreqTable& get_frequency_table() = 0;
 
     // 获取特定类的称号
     virtual std::string name() const;

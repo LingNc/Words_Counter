@@ -8,7 +8,7 @@ void BaseSqList::load(const SqList<string> &baseTable){
     }
 }
 
-const FreqTable &BaseSqList::get_frequency_table() const{
+const FreqTable &BaseSqList::get_frequency_table() {
     return _data;
 }
 

@@ -64,7 +64,7 @@ public:
      * @brief 获取词频表，转换为 FreqTable 类型
      * @return FreqTable 引用
      */
-    const FreqTable& get_frequency_table() const override {
+    const FreqTable& get_frequency_table() override {
         static FreqTable table;
         table.clear();
         for (auto node = freq_table.get_head(); node; node = node->next) {
