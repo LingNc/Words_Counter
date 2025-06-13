@@ -1,3 +1,10 @@
+/**
+ * @file linkedlistwordcounter.h
+ * @author Pete
+ * @brief 用链表实现的词频统计器，继承自 BaseWordCounter。
+ * @date 2025-06-13
+ */
+
 #ifndef LINKEDLIST_WORD_COUNTER_H
 #define LINKEDLIST_WORD_COUNTER_H
 
@@ -7,20 +14,30 @@
 #include <string>
 #include <utility>
 
-// 用链表实现的词频统计器
+/**
+ * @brief 用链表实现的词频统计器
+ * 继承自 BaseWordCounter，底层用 LinkedList 存储单词及其词频。
+ */
 class LinkedListWordCounter : public BaseWordCounter {
 public:
     LinkedListWordCounter() = default;
     ~LinkedListWordCounter() override = default;
 
+    /**
+     * @brief 加载基础单词表，清空当前统计表
+     * @param baseTable 外部传入的单词顺序表
+     */
     void load(const SqList<std::string> &baseTable) override {
-        freq_table = LinkedList<std::pair<std::string, size_t>>();
+        (void)baseTable; // 消除未使用参数警告
+        freq_table.clear(); // 清空链表
     }
 
+    /**
+     * @brief 插入或更新一个单词的频率
+     * @param word 单词
+     */
     void insert_word(const std::string& word) override {
-        size_t idx = freq_table.find_word(std::make_pair(word, 0));
-        size_t curIdx = 0;
-        for (auto node = freq_table.get_head(); node; node = node->next, ++curIdx) {
+        for (auto node = freq_table.get_head(); node; node = node->next) {
             if (node->data.first == word) {
                 ++node->data.second;
                 return;
@@ -29,7 +46,10 @@ public:
         freq_table.push_back({word, 1});
     }
 
-    // 返回FreqTable类型，转换链表内容
+    /**
+     * @brief 获取词频表，转换为 FreqTable 类型
+     * @return FreqTable 引用
+     */
     const FreqTable& get_frequency_table() const override {
         static FreqTable table;
         table.clear();
@@ -40,30 +60,29 @@ public:
     }
 
 protected:
+    /**
+     * @brief 查找单词，返回查找结果结构体
+     * @param word 单词
+     * @return Ret 结构体，包含是否找到、词频、比较次数等
+     */
     Ret _search_word(const std::string &word) override {
-        Ret ret{};
-        size_t compares = 0;
-        auto start = std::chrono::high_resolution_clock::now();
-        for (auto node = freq_table.get_head(); node; node = node->next) {
-            ++compares;
-            if (node->data.first == word) {
-                auto end = std::chrono::high_resolution_clock::now();
-                ret.isFound = true;
-                ret.wordFreq = node->data.second;
-                ret.comparisons = compares;
-                ret.time_us = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-                return ret;
-            }
-        }
-        auto end = std::chrono::high_resolution_clock::now();
+        Ret ret;
         ret.isFound = false;
         ret.wordFreq = 0;
-        ret.comparisons = compares;
-        ret.time_us = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+        ret.comparisons = 0;
+        for (const auto& item : freq_table) {
+            ++ret.comparisons;
+            if (item.first == word) {
+                ret.isFound = true;
+                ret.wordFreq = item.second;
+                break; // 找到后立即退出循环
+            }
+        }
         return ret;
     }
 
 private:
+    // 链表，存储<单词, 词频>对
     LinkedList<std::pair<std::string, size_t>> freq_table;
 };
 
