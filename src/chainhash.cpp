@@ -79,20 +79,18 @@ void ChainHash::insert_word(const std::string& word) {
 }
 
 // 获取频率表
-const FreqTable& ChainHash::get_frequency_table() const {
-    utils::shared_ptr<FreqTable> freqtable = utils::make_shared<FreqTable>();
-
+const FreqTable& ChainHash::get_frequency_table() {
     for (size_t i = 0; i < _hash.size(); i++){
         utils::shared_ptr<Node<std::string>> current = _hash[i].get_head();
 
         while (current) {
             WordItem item(current->data, current->frequency);
-            freqtable->push_back(item);
+            _freqtable.push_back(item);
             current = current->next;
         }
     }
 
-    return *freqtable;
+    return _freqtable;
 }
 
 // 查找单词词频，返回是否(成功,词频)和比较次数

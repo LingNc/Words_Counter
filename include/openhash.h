@@ -8,6 +8,7 @@ class OpenHash : public BaseWordCounter{
 using Hash = SqList<Pair<std::string, size_t>>;
 private:
     Hash _hash;
+    FreqTable _freqtable;
     uint32_t fnv1a_hash(const std::string& str);
     // 重新调整哈希表大小，默认扩大为原来的两倍
     void resize(size_t newsize = 0);
@@ -22,7 +23,7 @@ public:
     virtual void insert_word(const std::string& word) override;
 
     // 获取频率表
-    virtual const FreqTable& get_frequency_table() const override;
+    virtual const FreqTable& get_frequency_table() override;
 
     // 名字
     virtual std::string name() const override;
