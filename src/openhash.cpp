@@ -2,6 +2,7 @@
 #include "basetype.h"
 #include "sqlist.hpp"
 #include "pair.hpp"
+#include "sharedptr.hpp"
 
 OpenHash::OpenHash(size_t size):_hash(size){};
 OpenHash::~OpenHash(){};
@@ -83,7 +84,7 @@ void OpenHash::insert_word(const std::string& word) {
 
 // 获取频率表
 const FreqTable& OpenHash::get_frequency_table() const {
-    FreqTable *freqtable = new FreqTable();
+    utils::shared_ptr<FreqTable> freqtable = utils::make_shared<FreqTable>();
     for (size_t i = 0; i < _hash.size(); i++){
         if (!_hash[i].first.empty()){
             freqtable->push_back(_hash[i]);

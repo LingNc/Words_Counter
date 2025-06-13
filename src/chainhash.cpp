@@ -80,7 +80,7 @@ void ChainHash::insert_word(const std::string& word) {
 
 // 获取频率表
 const FreqTable& ChainHash::get_frequency_table() const {
-    FreqTable *freqtable = new FreqTable();
+    utils::shared_ptr<FreqTable> freqtable = utils::make_shared<FreqTable>();
 
     for (size_t i = 0; i < _hash.size(); i++){
         utils::shared_ptr<Node<std::string>> current = _hash[i].get_head();
