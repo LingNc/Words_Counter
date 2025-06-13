@@ -41,7 +41,7 @@ public:
      */
     void load(const SqList<std::string> &baseTable) override {
         freq_table.clear(); // 清空链表
-        for (int i = 0; i < baseTable.size(); i++){
+        for (size_t i = 0; i < baseTable.size(); i++){
             insert_word(baseTable[i]);
         }
     }
