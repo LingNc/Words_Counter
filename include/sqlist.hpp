@@ -96,11 +96,12 @@ SqList<Type>::SqList(): _capacity(DEFAULT_CAPACITY), _size(0) {
 }
 
 // 构造函数
+// 初始化为大小为n的数组
 template <typename Type>
-SqList<Type>::SqList(size_t n): _size(0) {
+SqList<Type>::SqList(size_t n): _size(n) {
     _capacity = (n > 0) ? n : DEFAULT_CAPACITY;
-    _data=new Type[_capacity];
-
+    // 附带对内置元素的默认清零
+    _data=new Type[_capacity]();
 }
 
 // 析构函数
@@ -194,8 +195,9 @@ SqList<Type>& SqList<Type>::operator=(std::initializer_list<Type> initList){
 // 预留函数
 template <typename Type>
 void SqList<Type>::reserve(size_t n){
-    if(n > _capacity){
-        Type* new_data = new Type[n];
+    if(n>_capacity){
+        // 不初始化的预留
+        Type *new_data = static_cast<Type*>(::operator new[](n * sizeof(Type)));
 
         // 使用工具函数utils::move移动已有元素
         utils::move(_data, _data + _size, new_data);
@@ -321,6 +323,10 @@ template <typename Type>
 void SqList<Type>::resize(size_t newSize){
     if(newSize > _capacity){
         reserve(newSize);
+        // 对新的空间进行初始化
+        for(size_t i=_size;i<newSize;++i){
+            new (&_data[i]) Type();
+        }
     }
     _size = newSize;
 }

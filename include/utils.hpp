@@ -70,6 +70,19 @@ namespace utils{
             *result++=utils::move(*first++);
         }
     }
+
+    // 完美转发
+    /*
+        * @brief 完美转发函数
+        * @tparam T 要转发的类型
+        * @param t 要转发的对象
+        * @return 返回一个右值引用或左值引用，具体取决于传入的参数类型
+        * @note 该函数用于实现完美转发，保留参数的值类别。
+    */
+    template <typename T>
+    constexpr T &&forward(utils::remove_reference_t<T> &t) noexcept{
+        return static_cast<T &&>(t);
+    }
 }
 
 #endif // TOOLS_H

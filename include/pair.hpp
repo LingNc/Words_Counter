@@ -1,7 +1,7 @@
 #ifndef PAIR_H
 #define PAIR_H
 
-#include <bits/move.h>
+#include "utils.hpp"
 template <typename Type1,typename Type2>
 class Pair{
 public:
@@ -11,11 +11,11 @@ public:
     Pair()=default;
     // 通用构造函数，支持完美转发
     template<typename U1,typename U2>
-    Pair(U1&& f, U2&& s) : first(std::forward<U1>(f)), second(std::forward<U2>(s)) {}
+    Pair(U1&& f, U2&& s) : first(utils::forward<U1>(f)), second(utils::forward<U2>(s)) {}
     // 拷贝构造
     Pair(const Pair &other)=default;
     // 移动构造
-    Pair(Pair &&other) noexcept:first(std::move(other.first)),second(std::move(other.second)){}
+    Pair(Pair &&other) noexcept:first(utils::move(other.first)),second(utils::move(other.second)){}
 
     // 赋值函数
     // 拷贝赋值
