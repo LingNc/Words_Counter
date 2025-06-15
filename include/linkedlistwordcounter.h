@@ -10,6 +10,7 @@
 
 #include "basewordcounter.h"
 #include "linkedlist.hpp"
+#include "pair.hpp"
 #include <string>
 
 
@@ -99,7 +100,7 @@ private:
     /**
      * @brief 链表，存储<单词, 词频>对
      */
-    LinkedList<std::pair<std::string, size_t>> freq_table;
+    LinkedList<Pair<std::string, size_t>> freq_table;
 };
 
 #endif // LINKEDLIST_WORD_COUNTER_H

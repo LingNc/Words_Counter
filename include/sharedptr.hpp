@@ -3,7 +3,6 @@
 
 #include <cstddef>
 #include "utils.hpp"
-
 namespace utils{
     /*
         * @brief 控制块类，用于管理共享指针的引用计数和对象指针
@@ -34,7 +33,7 @@ namespace utils{
         void decrease();
 
         // 私有构造函数，供 make_shared 使用
-        shared_ptr(T* ptr, Control_Block<T>* cblock) : _data(ptr), _cblock(cblock) {}
+        shared_ptr(T *ptr,Control_Block<T> *cblock): _data(ptr),_cblock(cblock){}
 
     public:
         /*
@@ -120,7 +119,7 @@ namespace utils{
     void Control_Block<T>::del_cblock(){
         // 如果结合
         if(is_combin){
-            ::operator delete[](this);
+            ::operator delete(this);
         }
         else{
             // 非结合，单独释放
@@ -137,10 +136,10 @@ namespace utils{
             _cblock->destroy();
             // 通过控制块统一管理
             _cblock->del_cblock();
+            // 置空，防止悬空指针
+            _data=nullptr;
+            _cblock=nullptr;
         }
-        // 置空，防止悬空指针
-        _data=nullptr;
-        _cblock=nullptr;
     }
 
     // 构造函数
