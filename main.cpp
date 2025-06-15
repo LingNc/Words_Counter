@@ -211,6 +211,12 @@ void word_search_menu(const string &selected_file,const SqList<utils::shared_ptr
     }
 }
 
+// 自定义排序函数
+// 用于显示前n个词频
+bool compare_word_items(const WordItem &a, const WordItem &b) {
+    return a.second > b.second; // 按词频降序排序
+}
+
 // 输出到文件
 void output_into_file(const SqList<utils::shared_ptr<BaseWordCounter>>& counters,FileHandle &file_handler){
     // 创建统计器
@@ -227,15 +233,21 @@ void output_into_file(const SqList<utils::shared_ptr<BaseWordCounter>>& counters
         }
     }
 
+    // 输出高频排序表
+    string output_file="./output/high_freq_table.txt";
+    // 排序
+    static SqList<WordItem> sorted_table=counters[2]->get_frequency_table();
+    utils::sort(sorted_table.begin(),sorted_table.end(),compare_word_items);
+    if(file_handler.write_into_file(sorted_table,output_file)){
+        cout<<"高频词频表已输出到 "<<output_file<<"\n";
+    }
+    else{
+        cout<<"高频词频表输出失败。\n";
+    }
+
     cout<<"\n按回车键继续...";
     cin.ignore();
     cin.get();
-}
-
-// 自定义排序函数
-// 用于显示前n个词频
-bool compare_word_items(const WordItem &a, const WordItem &b) {
-    return a.second > b.second; // 按词频降序排序
 }
 
 // 显示前n个词频
