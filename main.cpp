@@ -5,9 +5,11 @@
 #include "linkedlistwordcounter.h"
 #include "sqlist.hpp"
 #include "filehandle.h"
+#include "tools.h"
 #include <iostream>
 #include <filesystem>
 #include <iomanip>
+#include <chrono>
 
 using std::string;
 using std::cin;
@@ -22,14 +24,14 @@ void clear_screen(){
 }
 
 // 初始化所有统计器
-SqList<BaseWordCounter *> init_counters(){
+SqList<utils::shared_ptr<BaseWordCounter>> init_counters(){
     // 初始化所有统计器
-    SqList<BaseWordCounter *> counters;
-    counters.push_back(new LinkedListWordCounter());
-    counters.push_back(new SequenSqList());
-    counters.push_back(new BinarySqlist());
-    counters.push_back(new ChainHash());
-    counters.push_back(new OpenHash());
+    SqList<utils::shared_ptr<BaseWordCounter>> counters;
+    counters.push_back(utils::shared_ptr<BaseWordCounter>(new LinkedListWordCounter()));
+    counters.push_back(utils::shared_ptr<BaseWordCounter>(new SequenSqList()));
+    counters.push_back(utils::shared_ptr<BaseWordCounter>(new BinarySqlist()));
+    counters.push_back(utils::shared_ptr<BaseWordCounter>(new ChainHash()));
+    counters.push_back(utils::shared_ptr<BaseWordCounter>(new OpenHash()));
     return counters;
 }
 
@@ -81,7 +83,7 @@ string select_file(const SqList<string> &files){
 }
 
 // 对比多种方法的性能
-void compare_methods(const string &filename){
+void compare_methods(const string &filename,const SqList<utils::shared_ptr<BaseWordCounter>> counters){
     string filepath="./tests/"+filename;
     FileHandle file_handler(filepath);
 
@@ -94,30 +96,71 @@ void compare_methods(const string &filename){
     const auto &words=file_handler.get_word_set();
     cout<<"文件读取成功，共找到 "<<words.size()<<" 个单词。\n";
 
-    SqList<BaseWordCounter *> counters=init_counters();
+    // 获取词频表用于测试查找性能
+    const auto &freq_table = counters[0]->get_frequency_table();
+    cout<<"获取到词频表，共 "<<freq_table.size()<<" 个不同单词。\n";
 
     cout<<"\n开始性能对比...\n";
-    cout<<std::setw(20)<<"方法"
-        <<std::setw(15)<<"处理时间(ms)"<<"\n";
-    cout<<string(50,'-')<<"\n";
-
+    cout<<utils::format_aligned("方法",20)
+        <<utils::format_aligned("预加载处理时间(ms)",20)
+        <<utils::format_aligned("正确平均查找长度(ASL)",25)
+        <<utils::format_aligned("平均查找长度",18)
+        <<utils::format_aligned("平均查找时间(μs)",18)
+        <<"\n";
+    cout<<string(101,'-')<<"\n";
     for(auto counter:counters){
-        auto start=std::chrono::high_resolution_clock::now();
-        counter->load(words);
-        auto end=std::chrono::high_resolution_clock::now();
+        // 测量加载时间
+        auto start_load=std::chrono::high_resolution_clock::now();
+        // 重新创建并加载数据来测量加载时间，使用智能指针管理
+        utils::shared_ptr<BaseWordCounter> temp_counter;
+        if(counter->name() == "链表直接查找") {
+            temp_counter = utils::shared_ptr<BaseWordCounter>(new LinkedListWordCounter());
+        }
+        else if(counter->name() == "顺序查找顺序表") {
+            temp_counter = utils::shared_ptr<BaseWordCounter>(new SequenSqList());
+        }
+        else if(counter->name() == "二分查找顺序表") {
+            temp_counter = utils::shared_ptr<BaseWordCounter>(new BinarySqlist());
+        }
+        else if(counter->name() == "链式哈希表") {
+            temp_counter = utils::shared_ptr<BaseWordCounter>(new ChainHash());
+        }
+        else if(counter->name() == "开放地址哈希表") {
+            temp_counter = utils::shared_ptr<BaseWordCounter>(new OpenHash());
+        }
 
-        auto duration=std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
-        // const auto &freq_table=counter->get_frequency_table();
+        if(temp_counter){
+            temp_counter->load(words);
+        }
+        auto end_load=std::chrono::high_resolution_clock::now();
+        auto load_duration=std::chrono::duration_cast<std::chrono::milliseconds>(end_load-start_load);
 
-        cout<<std::setw(20)<<counter->name()
-            <<std::setw(15)<<duration.count()
-            <<std::setw(15)<<"\n";
-        delete counter;
+        // 测量查找性能：遍历整个词频表进行查找
+        long long total_comparisons=0;
+        long long total_search_time_us=0;
+
+        for(const auto &word_item : freq_table){
+            auto result = counter->search_word(word_item.first);
+            total_search_time_us += result.time_us;
+            total_comparisons += result.comparisons;
+        }
+
+        // 计算平均值
+        double asl=counter->get_ASL();
+        double avg_search_time=static_cast<double>(total_search_time_us)/freq_table.size();
+        double avg_comparisons=static_cast<double>(total_comparisons)/freq_table.size();
+
+        cout<<utils::format_aligned(counter->name(),20)
+            <<utils::format_aligned(std::to_string(load_duration.count()), 20)
+            <<utils::format_aligned(std::to_string(asl),25)
+            <<utils::format_aligned(std::to_string(avg_comparisons),18)
+            <<utils::format_aligned(std::to_string(avg_search_time),18)
+            <<"\n";
     }
 }
 
 // 单词查找功能
-void word_search_menu(const string &selected_file,const SqList<BaseWordCounter *> &counters){
+void word_search_menu(const string &selected_file,const SqList<utils::shared_ptr<BaseWordCounter>> &counters){
     // 单词查找循环
     while(true){
         clear_screen();
@@ -133,24 +176,24 @@ void word_search_menu(const string &selected_file,const SqList<BaseWordCounter *
         }
 
         cout<<"\n查找单词: '"<<search_word<<"'\n";
-        cout<<std::setw(20)<<"方法"
-            <<std::setw(10)<<"找到"
-            <<std::setw(10)<<"词频"
-            <<std::setw(15)<<"比较次数"
-            <<std::setw(15)<<"查找时间(μs)"
-            <<std::setw(15)<<"ASL"
+        cout<<utils::format_aligned("方法", 20)
+            <<utils::format_aligned("找到", 10)
+            <<utils::format_aligned("词频", 10)
+            <<utils::format_aligned("比较次数", 15)
+            <<utils::format_aligned("查找时间(μs)", 16)
+            <<utils::format_aligned("ASL", 15)
             <<"\n";
-        cout<<string(70,'-')<<"\n";
+        cout<<string(86,'-')<<"\n";
 
         for(auto counter:counters){
             auto result=counter->search_word(search_word);
 
-            cout<<std::setw(20)<<counter->name()
-                <<std::setw(10)<<(result.isFound?"是":"否")
-                <<std::setw(10)<<result.wordFreq
-                <<std::setw(15)<<result.comparisons
-                <<std::setw(15)<<result.time_us
-                <<std::setw(15)<<counter->get_ASL()
+            cout<<utils::format_aligned(counter->name(), 20)
+                <<utils::format_aligned((result.isFound?"是":"否"), 10)
+                <<utils::format_aligned(std::to_string(result.wordFreq), 10)
+                <<utils::format_aligned(std::to_string(result.comparisons), 15)
+                <<utils::format_aligned(std::to_string(result.time_us), 16)
+                <<utils::format_aligned(std::to_string(counter->get_ASL()), 15)
                 <<"\n";
         }
 
@@ -169,16 +212,10 @@ void word_search_menu(const string &selected_file,const SqList<BaseWordCounter *
 }
 
 // 输出到文件
-void output_into_file(const string &selected_file,FileHandle &file_handler){
-    SqList<BaseWordCounter *> counters=init_counters();
+void output_into_file(const SqList<utils::shared_ptr<BaseWordCounter>>& counters,FileHandle &file_handler){
     // 创建统计器
     for(int i=1; i<=5; ++i){
         auto &counter=counters[i-1];
-        // 载入数据
-        const auto &words=file_handler.get_word_set();
-        cout<<"统计器: "<<counter->name()<<"\n";
-        cout<<"载入文件表生成词频表..."<<endl;
-        counter->load(words);
 
         // 输出结果到文件
         string output_file="./output/"+counter->name()+"_freq.txt";
@@ -188,8 +225,6 @@ void output_into_file(const string &selected_file,FileHandle &file_handler){
         else{
             cout<<"词频统计结果输出失败。\n";
         }
-
-        delete counter;
     }
 
     cout<<"\n按回车键继续...";
@@ -197,34 +232,37 @@ void output_into_file(const string &selected_file,FileHandle &file_handler){
     cin.get();
 }
 
+// 自定义排序函数
+// 用于显示前n个词频
+bool compare_word_items(const WordItem &a, const WordItem &b) {
+    return a.second > b.second; // 按词频降序排序
+}
+
 // 显示前n个词频
-void show_top_n(const FreqTable table){
+void show_top_n(const SqList<utils::shared_ptr<BaseWordCounter>> &counters){
+    // 获取单词表
+    auto table = counters[3]->get_frequency_table();
+
     cout<<"请输入要显示的前n个词频: ";
     size_t n;
     cin>>n;
     if(n==0){
         cout<<"无效的n值，必须大于0。\n";
     }
-    // 冒泡排序
-    SqList<WordItem> sorted_table=table;
-    for(size_t i=0; i<sorted_table.size(); ++i){
-        for(size_t j=i+1; j<sorted_table.size(); ++j){
-            if(sorted_table[j].second>sorted_table[i].second){
-                // 交换
-                utils::swap(sorted_table[i],sorted_table[j]);
-            }
-        }
-    }
+    // 排序
+    static SqList<WordItem> sorted_table=table;
+    utils::sort(sorted_table.begin(),sorted_table.end(),compare_word_items);
+
     cout<<"\n=== 前 "<<n<<" 个词频 ===\n";
-    cout<<std::setw(20)<<"单词"
-        <<std::setw(10)<<"词频"<<"\n";
+    cout<<utils::format_aligned("单词", 20)
+        <<utils::format_aligned("词频", 10)<<"\n";
     cout<<string(30,'-')<<"\n";
 
     size_t count=0;
     for(const auto &item:sorted_table){
         if(count>=n) break;
-        cout<<std::setw(20)<<item.first
-            <<std::setw(10)<<item.second<<"\n";
+        cout<<utils::format_aligned(item.first, 20)
+            <<utils::format_aligned(std::to_string(item.second), 10)<<"\n";
         ++count;
     }
     // 按任意键继续
@@ -264,7 +302,7 @@ void file_processing_menu(const SqList<string> &files){
     cout<<"文件读取成功，共找到 "<<words.size()<<" 个单词。\n";
 
     // 创建所有统计器并载入数据
-    SqList<BaseWordCounter *> counters=init_counters();
+    SqList<utils::shared_ptr<BaseWordCounter>> counters=init_counters();
     cout<<"正在载入数据到各个统计器...\n";
     int i=0;
     for(auto counter:counters){
@@ -275,9 +313,6 @@ void file_processing_menu(const SqList<string> &files){
         counter->load(words);
     }
     cout<<"数据载入完成！\n";
-
-    // 从获取单词表
-    FreqTable freq_table = counters[1]->get_frequency_table();
 
     // 文件处理菜单循环
     while(true){
@@ -303,18 +338,18 @@ void file_processing_menu(const SqList<string> &files){
             break;
         case 2:
             clear_screen();
-            compare_methods(selected_file);
+            compare_methods(selected_file,counters);
             cout<<"\n按回车键继续...";
             cin.ignore();
             cin.get();
             break;
         case 3:
             clear_screen();
-            output_into_file(selected_file,file_handler);
+            output_into_file(counters,file_handler);
             break;
         case 4:
             clear_screen();
-            show_top_n(freq_table);
+            show_top_n(counters);
             break;
         default:
             cout<<"无效选择，请重新输入。\n";
@@ -323,11 +358,6 @@ void file_processing_menu(const SqList<string> &files){
             cin.get();
             break;
         }
-    }
-
-    // 清理内存
-    for(auto counter:counters){
-        delete counter;
     }
 }
 

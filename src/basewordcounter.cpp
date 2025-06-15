@@ -10,7 +10,8 @@ void BaseWordCounter::load(const SqList<std::string> &baseTable){
 
 double BaseWordCounter::get_ASL() const {
     if (_successCounts == 0) {
-        throw std::runtime_error("ASL 计算除零错误");
+        // throw std::runtime_error("ASL 计算除零错误");
+        return -1.0;
     }
     return static_cast<double>(_totalCompares)/_successCounts;
 }

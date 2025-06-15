@@ -12,7 +12,7 @@ string BinarySqlist::name() const{
 
 // 返回第一个大于等于的地方
 Pair<size_t,size_t> BinarySqlist::find_word(const string &word){
-    int64_t left = -1, right = _data.size();
+    int64_t left=-1,right=_data.size();
     // 比较次数
     size_t comparisons=0;
 
@@ -24,14 +24,9 @@ Pair<size_t,size_t> BinarySqlist::find_word(const string &word){
         else
             left=mid;
     }
-    // 如果找到
-    if(right!=(int64_t)_data.size()){
-        if(_data[right].first==word){
-            return { right,comparisons };
-        }
-        else return { right,comparisons };
-    }
-    else return { right, comparisons };
+
+    // 返回插入位置
+    return { right,comparisons };
 }
 
 void BinarySqlist::insert_word(const std::string &word){
@@ -41,5 +36,23 @@ void BinarySqlist::insert_word(const std::string &word){
         _data[index].second++;
     // 如果不存在，插入新单词
     else
-        _data.insert(index, {word, 1});
+        _data.insert(index,{ word,1 });
+}
+
+BaseWordCounter::Ret BinarySqlist::_search_word(const string &word){
+    Ret ret;
+    ret.isFound=false;
+    auto [index,times]=find_word(word);
+    ret.comparisons=times;
+    // 如果找到
+    // 修复二分的时候如果大于没有判断等于的问题
+    if(index!=_data.size()){
+        if(_data[index].first==word){
+            // 在二分的情况下，这里也算一次比较
+            ret.comparisons++;
+            ret.isFound=true;
+            ret.wordFreq=_data[index].second;
+        }
+    }
+    return ret;
 }
