@@ -7,6 +7,6 @@ tests/test*.cpp
 tests/*.txt
 # 构建目录
 build/
-
+output/
 !LICENSE
 !Makefile

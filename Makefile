@@ -1,6 +1,6 @@
 # Makefile for Words_Counter 项目
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -g -I include
+CXXFLAGS = -std=c++17 -Wall -Wextra -g
 
 MAIN = WordsCounter
 TEST = wordtest

@@ -5,7 +5,8 @@ import urllib.request
 # 下载文件
 urls = [
     ("https://raw.githubusercontent.com/LingNc/Words_Counter/files/tests/HarryPotter.txt", "HarryPotter.txt"),
-    ("https://raw.githubusercontent.com/LingNc/Words_Counter/refs/heads/files/tests/%C3%80LaRechercheDuTempsPerdu.txt", "ÀLaRechercheDuTempsPerdu.txt")
+    ("https://raw.githubusercontent.com/LingNc/Words_Counter/refs/heads/files/tests/%C3%80LaRechercheDuTempsPerdu.txt", "ÀLaRechercheDuTempsPerdu.txt"),
+    ("https://raw.githubusercontent.com/LingNc/Words_Counter/refs/heads/files/tests/FranceInEighteenHundredAndTwoDescribedInASeriesOfContemporaryLetters.txt", "FranceInEighteenHundredAndTwoDescribedInASeriesOfContemporaryLetters.txt"),
 ]
 
 for url, filename in urls:
