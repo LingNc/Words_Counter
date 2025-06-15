@@ -193,14 +193,18 @@ namespace utils{
     template <typename Iter,typename Compare=utils::less<typename utils::iter_value_t<Iter>>>
     void sort(Iter first,Iter last,Compare comp=Compare{}){
         if(first==last) return; // 空范围
+        bool swapped;
         for(auto it=first; it!=last; ++it){
+            swapped = false;
             for(auto jt=it+1; jt!=last; ++jt){
                 if(comp(*jt,*it)){
                     auto temp=utils::move(*it);
                     *it=utils::move(*jt);
                     *jt=temp;
+                    swapped = true;
                 }
             }
+            if(!swapped) break; // 如果没有发生交换，说明已经有序，提前退出
         }
     }
 

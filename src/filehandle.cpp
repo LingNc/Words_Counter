@@ -1,4 +1,5 @@
 #include "filehandle.h"
+#include "tools.h"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -82,9 +83,13 @@ bool FileHandle::write_into_file(const FreqTable& frequency_table,
         std::cerr << "无法打开输出文件: " << outfile << std::endl;
         return false;
     }
-    out << std::left <<std::setw(15)<<"单词" << ": "<<std::left << std::setw(15)<< "频率" << std::endl;
-    for (size_t i = 0; i < frequency_table.size(); i++) {
-        out << std::left <<std::setw(15)<<frequency_table[i].first << ": " <<std::left <<std::setw(15)<< frequency_table[i].second << std::endl;
+    out <<utils::format_aligned("单词",30)
+        <<utils::format_aligned("频率",10)
+        <<std::endl;
+    for(size_t i=0; i<frequency_table.size(); i++){
+        out <<utils::format_aligned(frequency_table[i].first,30)
+            <<utils::format_aligned(std::to_string(frequency_table[i].second),10)
+            <<std::endl;
     }
     out.close();
     return true;
